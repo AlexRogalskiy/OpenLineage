@@ -1,0 +1,4 @@
+rootProject.name = 'openlineage-flink'
+include 'flink-stateful-application'
+
+
