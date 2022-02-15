@@ -4,6 +4,8 @@ import io.openlineage.flink.avro.event.InputEvent;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.openlineage.kafka.KafkaClientProvider.aKafkaSink;
 import static io.openlineage.kafka.KafkaClientProvider.aKafkaSource;
@@ -12,8 +14,11 @@ import static org.apache.flink.streaming.api.environment.CheckpointConfig.Extern
 
 public class FlinkStatefulApplication {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlinkStatefulApplication.class);
+
     public static void main(String[] args) throws Exception {
         ParameterTool parameters = ParameterTool.fromArgs(args);
+        LOGGER.info("------- Getting StreamExecutionEnvironment -----");
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         env.getConfig().setGlobalJobParameters(parameters);
@@ -28,7 +33,7 @@ public class FlinkStatefulApplication {
                 .process(new StatefulCounter()).name("process").uid("process")
                 .sinkTo(aKafkaSink(parameters.getRequired("output-topic"))).name("kafka-sink").uid("kafka-sink");
 
+        env.registerJobListener(new OpenLineageFlinkJobListener());
         env.execute("flink-stateful-application");
     }
-
 }
