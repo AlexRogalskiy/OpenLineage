@@ -181,4 +181,5 @@ if __name__ == '__main__':
     test_integration('dbt_dag', 'requests/dbt.json')
     test_integration('source_code_dag', 'requests/source_code.json')
     test_integration('custom_extractor', 'requests/custom_extractor.json')
+    test_integration('unknown_operator_dag', 'requests/unknown_operator.json')
     test_integration_ordered('event_order', 'requests/order')
