@@ -46,6 +46,7 @@ def wait_for_dag(dag_id):
 
     log.info(f"DAG '{dag_id}' state set to '{state}'.")
     if state == 'failed':
+        log.warning("DAG failed - exiting")
         sys.exit(1)
     elif state != "success":
         raise Exception('Retry!')
